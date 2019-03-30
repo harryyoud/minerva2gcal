@@ -10,7 +10,7 @@ import sys
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from .settings_minerva2gcal import CAL_ID,MINERVA_CREDS
+from settings_minerva2gcal import CAL_ID, MINERVA_CREDS
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 REJECTS = [
@@ -180,7 +180,7 @@ class CalendarWrapper:
 def download_from_minerva():
     print("Downloading calendar from Minerva")
     s = requests.Session()
-    cred = MINVERVA_CREDS
+    cred = MINERVA_CREDS
     r = s.post('https://minerva.shef.ac.uk/minerva/med/index.php', data=cred)
     r.raise_for_status()
     r = s.get('https://minerva.shef.ac.uk/minerva/med/scripts/process_lect_'

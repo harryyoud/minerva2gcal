@@ -1,2 +1,2 @@
 CAL_ID = ""
-MINVERA_CREDS = {"user": "my_username", "password": "hunter2"}
+MINERVA_CREDS = {"user": "my_username", "password": "hunter2"}
