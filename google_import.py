@@ -14,6 +14,7 @@ from settings_minerva2gcal import CAL_ID, MINERVA_CREDS, REJECTS
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
+
 class CalendarWrapper:
     def __init__(self, csvdata, rejects, scopes, calendarId):
         self.csvdata = csvdata
@@ -107,11 +108,20 @@ class CalendarWrapper:
 
     def delete_all(self):
         events_service = self.service.events()
-        events = events_service.list(
-            calendarId=self.calendarId,
-            showDeleted=False
-        ).execute()
-        next_page_token = events['nextPageToken'] if 'nextPageToken' in events else None
+        next_page_token = None
+        while True:
+            events = events_service.list(
+                calendarId=self.calendarId,
+                showDeleted=False,
+                pageToken=next_page_token
+            ).execute()
+            next_page_token = self._delete_events(events_service, events,
+                                                  next_page_token)
+            if next_page_token is None:
+                break
+        return True
+
+    def _delete_events(self, events_service, events, next_page_token=None):
         batch = self.service.new_batch_http_request()
         for event in events['items']:
             batch.add(events_service.delete(
@@ -121,23 +131,7 @@ class CalendarWrapper:
         batch.execute()
         self.deleted += len(events['items'])
         print(f"Deleted {len(events['items'])}")
-        while next_page_token is not None:
-            batch = self.service.new_batch_http_request()
-            for event in events['items']:
-                batch.add(events_service.delete(
-                    calendarId=self.calendarId,
-                    eventId=event['id']
-                ))
-            batch.execute()
-            self.deleted += len(events['items'])
-            print(f"Deleted {len(events['items'])}")
-            events = events_service.list(
-                calendarId=self.calendarId,
-                showDeleted=False,
-                pageToken=next_page_token
-            ).execute()
-            next_page_token = events['nextPageToken'] if 'nextPageToken' in events else None
-        return True
+        return events['nextPageToken'] if 'nextPageToken' in events else None
 
     def add_events(self, events):
         events_service = self.service.events()
@@ -171,9 +165,10 @@ def download_from_minerva():
     r = s.post('https://minerva.shef.ac.uk/minerva/med/index.php', data=cred)
     r.raise_for_status()
     r = s.get('https://minerva.shef.ac.uk/minerva/med/scripts/process_lect_'
-                'export_timetable_student.php?t=2A_18_19&m=CSM1')
+              'export_timetable_student.php?t=2A_18_19&m=CSM1')
     r.raise_for_status()
     return r.text.splitlines()
+
 
 def main():
     cal = download_from_minerva()
@@ -190,6 +185,7 @@ def main():
     calendar.add_events(events)
     print(f'Added {calendar.added} events to the calendar')
     print(f'Diff = {calendar.added - calendar.deleted}')
+
 
 if __name__ == '__main__':
     main()
