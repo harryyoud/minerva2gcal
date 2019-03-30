@@ -24,7 +24,8 @@ REJECTS = [
     'Travel Time',
     'Dedicated Free Time',
     'Microbiology practical.*Class B',
-    'Personal\/Private study time'
+    'Personal\/Private study time',
+    'Easter Vacation',
 ]
 
 class CalendarWrapper:
