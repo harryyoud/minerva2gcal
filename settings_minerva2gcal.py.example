@@ -1,2 +1,3 @@
 CAL_ID = ""
 MINERVA_CREDS = {"user": "my_username", "password": "hunter2"}
+REJECTS = []

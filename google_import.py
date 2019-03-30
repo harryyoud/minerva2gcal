@@ -10,23 +10,9 @@ import sys
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from settings_minerva2gcal import CAL_ID, MINERVA_CREDS
+from settings_minerva2gcal import CAL_ID, MINERVA_CREDS, REJECTS
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
-REJECTS = [
-    'travel\/private study',
-    'Self Directed Learning',
-    'ILA groups (24-30|1-8|9-16)',
-    'Personal\/Self directed study',
-    'Early Years .* Class B',
-    'Prescribing Session',
-    'Prescribing Answers Session',
-    'Travel Time',
-    'Dedicated Free Time',
-    'Microbiology practical.*Class B',
-    'Personal\/Private study time',
-    'Easter Vacation',
-]
 
 class CalendarWrapper:
     def __init__(self, csvdata, rejects, scopes, calendarId):
