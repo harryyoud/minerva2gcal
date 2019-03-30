@@ -123,7 +123,7 @@ class CalendarWrapper:
         events_service = self.service.events()
         events = events_service.list(
             calendarId=self.calendarId,
-            showDeleted=True
+            showDeleted=False
         ).execute()
         next_page_token = events['nextPageToken'] if 'nextPageToken' in events else None
         batch = self.service.new_batch_http_request()
@@ -135,7 +135,7 @@ class CalendarWrapper:
         batch.execute()
         self.deleted += len(events['items'])
         print(f"Deleted {len(events['items'])}")
-        while nextPageToken is not None:
+        while next_page_token is not None:
             batch = self.service.new_batch_http_request()
             for event in events['items']:
                 batch.add(events_service.delete(
@@ -147,7 +147,7 @@ class CalendarWrapper:
             print(f"Deleted {len(events['items'])}")
             events = events_service.list(
                 calendarId=self.calendarId,
-                showDeleted=True,
+                showDeleted=False,
                 pageToken=next_page_token
             ).execute()
             next_page_token = events['nextPageToken'] if 'nextPageToken' in events else None
