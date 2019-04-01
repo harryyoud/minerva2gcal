@@ -52,7 +52,7 @@ class CalendarWrapper:
 
     def _date_conv(self, date, time):
         date = datetime.strptime(date+' '+time, '%d/%m/%Y %H:%M:%S')
-        return date.isoformat() + 'Z'
+        return date.isoformat()
 
     def _row_to_event(self, row):
         return {
