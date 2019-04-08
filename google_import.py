@@ -176,6 +176,8 @@ def main():
     if calendar.deleted is 0:
         print("Didn't find any events to delete, so quitting to prevent "
               "duplicates")
+        print("If this is the first time running the tool, create a random "
+              "event on your calendar before running this")
         sys.exit(1)
     print(f'Deleted total of {calendar.deleted} events from the calendar')
     events = calendar.import_csv()
