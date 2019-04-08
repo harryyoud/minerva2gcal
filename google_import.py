@@ -158,10 +158,9 @@ class CalendarWrapper:
             print(f"{cal['summary']} ({cal['id']})")
 
 
-def download_from_minerva():
+def download_from_minerva(cred):
     print("Downloading calendar from Minerva")
     s = requests.Session()
-    cred = MINERVA_CREDS
     r = s.post('https://minerva.shef.ac.uk/minerva/med/index.php', data=cred)
     r.raise_for_status()
     r = s.get('https://minerva.shef.ac.uk/minerva/med/scripts/process_lect_'
@@ -171,7 +170,7 @@ def download_from_minerva():
 
 
 def main():
-    cal = download_from_minerva()
+    cal = download_from_minerva(MINERVA_CREDS)
     calendar = CalendarWrapper(cal, REJECTS, SCOPES, CAL_ID)
     calendar.delete_all()
     if calendar.deleted is 0:
